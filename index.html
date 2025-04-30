@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chọn Lì Xì May Mắn</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: radial-gradient(circle, #ffe6cc, #ffcc99);
+      text-align: center;
+      padding: 20px;
+    }
+
+    h1 {
+      font-size: 28px;
+      color: #d35400;
+      margin-bottom: 30px;
+    }
+
+    .envelopes {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .envelope {
+      width: 100px;
+      height: 150px;
+      background-color: #e74c3c;
+      border-radius: 10px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.5s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    }
+
+    .envelope.opened {
+      background-color: #fff;
+      color: #2c3e50;
+      transform: rotateY(180deg);
+      cursor: default;
+    }
+
+    .envelope.disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 20px;
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    #reset-btn {
+      display: none;
+      margin-top: 20px;
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 8px;
+      background-color: #2ecc71;
+      color: white;
+      cursor: pointer;
+    }
+
+    #reset-btn:hover {
+      background-color: #27ae60;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🧧 Chọn Lì Xì May Mắn 🧧</h1>
+  <div class="envelopes" id="envelopes"></div>
+  <div id="result"></div>
+  <button id="reset-btn">Nhận Lì Xì 🎁</button>
+
+  <script>
+    const rewards = [
+      { value: "10.000 VND", weight: 98 },
+      { value: "100.000 VND", weight: 0.5 },
+      { value: "200.000 VND", weight: 0.3 },
+      { value: "500.000 VND", weight: 0.2 }
+    ];
+
+    const envelopeColors = ['#e74c3c', '#f1c40f', '#e67e22', '#8e44ad'];
+    const envelopesContainer = document.getElementById('envelopes');
+    const resultText = document.getElementById('result');
+    const resetBtn = document.getElementById('reset-btn');
+
+    let assignedPrizes = [];
+    let isRevealed = false;
+
+    function buildWeightedList() {
+      const list = [];
+      rewards.forEach((r, i) => {
+        for (let j = 0; j < r.weight; j++) list.push(i);
+      });
+      return list;
+    }
+
+    function assignPrizes() {
+      const weighted = buildWeightedList();
+      assignedPrizes = [];
+      for (let i = 0; i < 4; i++) {
+        const index = weighted[Math.floor(Math.random() * weighted.length)];
+        assignedPrizes.push(rewards[index].value);
+      }
+    }
+
+    function buildEnvelopes() {
+      envelopesContainer.innerHTML = '';
+      isRevealed = false;
+      assignPrizes();
+      resultText.textContent = '';
+      resetBtn.style.display = 'none';
+
+      for (let i = 0; i < 4; i++) {
+        const el = document.createElement('div');
+        el.className = 'envelope';
+        el.style.backgroundColor = envelopeColors[i % envelopeColors.length];
+        el.dataset.index = i;
+        el.innerText = "Lì xì";
+
+        el.addEventListener('click', () => {
+          if (isRevealed) return;
+          reveal(el, i);
+        });
+
+        envelopesContainer.appendChild(el);
+      }
+    }
+
+    function reveal(clickedEl, index) {
+      isRevealed = true;
+      const envelopes = document.querySelectorAll('.envelope');
+
+      envelopes.forEach((el, i) => {
+        el.classList.add('disabled');
+        if (i == index) {
+          el.classList.add('opened');
+          el.innerText = assignedPrizes[i];
+        }
+      });
+
+      resultText.textContent = `🎉 Bạn nhận được: ${assignedPrizes[index]}`;
+      resetBtn.style.display = 'inline-block';
+    }
+
+    resetBtn.onclick = buildEnvelopes;
+
+    buildEnvelopes();
+  </script>
+
+</body>
+</html>
