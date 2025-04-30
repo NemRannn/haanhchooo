@@ -1,165 +1,402 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <title>Chọn Lì Xì May Mắn</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle, #ffe6cc, #ffcc99);
-      text-align: center;
-      padding: 20px;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Lì Xì May Mắn</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9e4c3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            color: #d62828;
+            text-align: center;
+        }
 
-    h1 {
-      font-size: 28px;
-      color: #d35400;
-      margin-bottom: 30px;
-    }
+        h1 {
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            font-size: 36px;
+            color: #d62828;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .envelopes {
-      display: flex;
-      justify-content: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
+        h1 img {
+            width: 30px;
+            height: 30px;
+            margin: 0 10px;
+        }
 
-    .envelope {
-      width: 100px;
-      height: 150px;
-      background-color: #e74c3c;
-      border-radius: 10px;
-      position: relative;
-      cursor: pointer;
-      transition: transform 0.5s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 16px;
-      color: white;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 800px;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
 
-    .envelope.opened {
-      background-color: #fff;
-      color: #2c3e50;
-      transform: rotateY(180deg);
-      cursor: default;
-    }
+        .envelope {
+            width: 150px;
+            height: 200px;
+            perspective: 1000px;
+            cursor: pointer;
+            position: relative;
+            border-radius: 12px;
+        }
 
-    .envelope.disabled {
-      opacity: 0.4;
-      cursor: default;
-    }
+        .envelope-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+        }
 
-    #result {
-      margin-top: 30px;
-      font-size: 20px;
-      color: #27ae60;
-      font-weight: bold;
-    }
+        .flipped .envelope-inner {
+            transform: rotateY(180deg);
+        }
 
-    #reset-btn {
-      display: none;
-      margin-top: 20px;
-      padding: 12px 24px;
-      font-size: 16px;
-      border: none;
-      border-radius: 8px;
-      background-color: #2ecc71;
-      color: white;
-      cursor: pointer;
-    }
+        .envelope-front, .envelope-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
 
-    #reset-btn:hover {
-      background-color: #27ae60;
-    }
-  </style>
+        .envelope-front {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .envelope-red {
+            background-color: #ea5455;
+        }
+
+        .envelope-yellow {
+            background-color: #f8b400;
+        }
+
+        .envelope-orange {
+            background-color: #e67e22;
+        }
+
+        .envelope-purple {
+            background-color: #8e44ad;
+        }
+
+        .envelope-back {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid #d62828;
+        }
+
+        .amount {
+            font-size: 28px;
+            font-weight: bold;
+            color: #d62828;
+            margin-bottom: 5px;
+        }
+
+        .probability {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        button {
+            background-color: #d62828;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        button:hover {
+            background-color: #b51e1e;
+            transform: scale(1.05);
+        }
+
+        .heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .heading p {
+            margin: 5px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background-color: #ffcc00;
+            animation: firework 1s ease-out forwards;
+            opacity: 0;
+        }
+
+        .other-values {
+            position: absolute;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            color: rgba(214, 40, 40, 0.5);
+            font-size: 14px;
+            display: none;
+        }
+
+        @keyframes firework {
+            0% {
+                transform: translate(0, 0);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(var(--x), var(--y));
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
+    <h1>
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d62828'%3E%3Cpath d='M4,4A2,2 0 0,0 2,6V10A2,2 0 0,1 0,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 24,12A2,2 0 0,1 22,10V6A2,2 0 0,0 20,4H4M4,6H20V10A4,4 0 0,0 24,14V18H20V16H16V18H8V16H4V18H0V14A4,4 0 0,0 4,10V6M8,8V10H16V8H8M8,12V14H16V12H8Z'/%3E%3C/svg%3E" alt="Lì xì">
+        Chọn Lì Xì May Mắn
+        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d62828'%3E%3Cpath d='M4,4A2,2 0 0,0 2,6V10A2,2 0 0,1 0,12A2,2 0 0,1 2,14V18A2,2 0 0,0 4,20H20A2,2 0 0,0 22,18V14A2,2 0 0,1 24,12A2,2 0 0,1 22,10V6A2,2 0 0,0 20,4H4M4,6H20V10A4,4 0 0,0 24,14V18H20V16H16V18H8V16H4V18H0V14A4,4 0 0,0 4,10V6M8,8V10H16V8H8M8,12V14H16V12H8Z'/%3E%3C/svg%3E" alt="Lì xì">
+    </h1>
 
-  <h1>🧧 Chọn Lì Xì May Mắn 🧧</h1>
-  <div class="envelopes" id="envelopes"></div>
-  <div id="result"></div>
-  <button id="reset-btn">Nhận Lì Xì 🎁</button>
+    <div class="container" id="envelopes-container">
+        <div class="envelope" data-index="0">
+            <div class="envelope-inner">
+                <div class="envelope-front envelope-red">Lì xì</div>
+                <div class="envelope-back">
+                    <div class="amount">10.000đ</div>
+                    <div class="probability">95%</div>
+                </div>
+            </div>
+            <div class="other-values"></div>
+        </div>
+        <div class="envelope" data-index="1">
+            <div class="envelope-inner">
+                <div class="envelope-front envelope-yellow">Lì xì</div>
+                <div class="envelope-back">
+                    <div class="amount">20.000đ</div>
+                    <div class="probability">3%</div>
+                </div>
+            </div>
+            <div class="other-values"></div>
+        </div>
+        <div class="envelope" data-index="2">
+            <div class="envelope-inner">
+                <div class="envelope-front envelope-orange">Lì xì</div>
+                <div class="envelope-back">
+                    <div class="amount">200.000đ</div>
+                    <div class="probability">1,5%</div>
+                </div>
+            </div>
+            <div class="other-values"></div>
+        </div>
+        <div class="envelope" data-index="3">
+            <div class="envelope-inner">
+                <div class="envelope-front envelope-purple">Lì xì</div>
+                <div class="envelope-back">
+                    <div class="amount">500.000đ</div>
+                    <div class="probability">0,5%</div>
+                </div>
+            </div>
+            <div class="other-values"></div>
+        </div>
+    </div>
 
-  <script>
-    const rewards = [
-      { value: "10.000 VND", weight: 98 },
-      { value: "100.000 VND", weight: 0.5 },
-      { value: "200.000 VND", weight: 0.3 },
-      { value: "500.000 VND", weight: 0.2 }
-    ];
+    <button id="reset-btn">Nhận Thưởng & Chơi Lại</button>
 
-    const envelopeColors = ['#e74c3c', '#f1c40f', '#e67e22', '#8e44ad'];
-    const envelopesContainer = document.getElementById('envelopes');
-    const resultText = document.getElementById('result');
-    const resetBtn = document.getElementById('reset-btn');
+    <script>
+        // Định nghĩa mệnh giá và tỉ lệ
+        const prizes = [
+            { amount: "10.000đ", probability: 95 },
+            { amount: "20.000đ", probability: 3 },
+            { amount: "200.000đ", probability: 1.5 },
+            { amount: "500.000đ", probability: 0.5 }
+        ];
 
-    let assignedPrizes = [];
-    let isRevealed = false;
-
-    function buildWeightedList() {
-      const list = [];
-      rewards.forEach((r, i) => {
-        for (let j = 0; j < r.weight; j++) list.push(i);
-      });
-      return list;
-    }
-
-    function assignPrizes() {
-      const weighted = buildWeightedList();
-      assignedPrizes = [];
-      for (let i = 0; i < 4; i++) {
-        const index = weighted[Math.floor(Math.random() * weighted.length)];
-        assignedPrizes.push(rewards[index].value);
-      }
-    }
-
-    function buildEnvelopes() {
-      envelopesContainer.innerHTML = '';
-      isRevealed = false;
-      assignPrizes();
-      resultText.textContent = '';
-      resetBtn.style.display = 'none';
-
-      for (let i = 0; i < 4; i++) {
-        const el = document.createElement('div');
-        el.className = 'envelope';
-        el.style.backgroundColor = envelopeColors[i % envelopeColors.length];
-        el.dataset.index = i;
-        el.innerText = "Lì xì";
-
-        el.addEventListener('click', () => {
-          if (isRevealed) return;
-          reveal(el, i);
-        });
-
-        envelopesContainer.appendChild(el);
-      }
-    }
-
-    function reveal(clickedEl, index) {
-      isRevealed = true;
-      const envelopes = document.querySelectorAll('.envelope');
-
-      envelopes.forEach((el, i) => {
-        el.classList.add('disabled');
-        if (i == index) {
-          el.classList.add('opened');
-          el.innerText = assignedPrizes[i];
+        // Tạo hiệu ứng pháo hoa
+        function createFireworks(x, y, count) {
+            const container = document.body;
+            
+            for (let i = 0; i < count; i++) {
+                const firework = document.createElement('div');
+                firework.classList.add('firework');
+                
+                // Vị trí ban đầu
+                firework.style.left = `${x}px`;
+                firework.style.top = `${y}px`;
+                
+                // Tạo hướng di chuyển ngẫu nhiên
+                const angle = Math.random() * Math.PI * 2;
+                const distance = 50 + Math.random() * 100;
+                const xMove = Math.cos(angle) * distance;
+                const yMove = Math.sin(angle) * distance;
+                
+                // Màu sắc ngẫu nhiên
+                const colors = ['#ffcc00', '#d62828', '#00ff00', '#0000ff', '#ff00ff'];
+                firework.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                
+                // Set CSS variables for the animation
+                firework.style.setProperty('--x', `${xMove}px`);
+                firework.style.setProperty('--y', `${yMove}px`);
+                
+                container.appendChild(firework);
+                
+                // Xóa phần tử sau khi animation kết thúc
+                setTimeout(() => {
+                    container.removeChild(firework);
+                }, 1000);
+            }
         }
-      });
 
-      resultText.textContent = `🎉 Bạn nhận được: ${assignedPrizes[index]}`;
-      resetBtn.style.display = 'inline-block';
-    }
+        // Lấy kết quả dựa trên tỉ lệ
+        function getRandomPrize() {
+            const rand = Math.random() * 100;
+            let cumulativeProbability = 0;
+            
+            for (let i = 0; i < prizes.length; i++) {
+                cumulativeProbability += prizes[i].probability;
+                if (rand < cumulativeProbability) {
+                    return i;
+                }
+            }
+            return 0; // Mặc định trả về giải đầu tiên nếu có lỗi
+        }
 
-    resetBtn.onclick = buildEnvelopes;
+        // Khởi tạo trò chơi
+        function initGame() {
+            const envelopes = document.querySelectorAll('.envelope');
+            const resetBtn = document.getElementById('reset-btn');
+            let gameComplete = false;
+            
+            // Trộn các phong bao
+            const prizeIndices = [0, 1, 2, 3];
+            shuffleArray(prizeIndices);
+            
+            // Cập nhật nội dung các phong bao
+            envelopes.forEach((envelope, index) => {
+                const prizeIndex = prizeIndices[index];
+                const backface = envelope.querySelector('.envelope-back');
+                const amountElement = backface.querySelector('.amount');
+                const probabilityElement = backface.querySelector('.probability');
+                const otherValuesElement = envelope.querySelector('.other-values');
+                
+                amountElement.textContent = prizes[prizeIndex].amount;
+                probabilityElement.textContent = prizes[prizeIndex].probability + '%';
+                
+                envelope.addEventListener('click', function() {
+                    if (gameComplete) return;
+                    
+                    // Chỉ lật phong bao được chọn
+                    this.classList.add('flipped');
+                    
+                    // Hiển thị giá trị mờ của các phong bao khác
+                    envelopes.forEach((env, i) => {
+                        if (env !== this) {
+                            const envIndex = parseInt(env.getAttribute('data-index'));
+                            const prizeIdx = prizeIndices[envIndex];
+                            const otherValues = env.querySelector('.other-values');
+                            otherValues.textContent = prizes[prizeIdx].amount;
+                            otherValues.style.display = 'block';
+                        }
+                    });
+                    
+                    // Tạo hiệu ứng với phong bao được chọn
+                    const rect = this.getBoundingClientRect();
+                    const centerX = rect.left + rect.width / 2;
+                    const centerY = rect.top + rect.height / 2;
+                    createFireworks(centerX, centerY, 30);
+                    
+                    // Hiển thị nút reset
+                    resetBtn.style.display = 'block';
+                    gameComplete = true;
+                });
+            });
+            
+            // Nút chơi lại
+            resetBtn.addEventListener('click', function() {
+                resetGame();
+            });
+        }
 
-    buildEnvelopes();
-  </script>
+        // Trộn mảng (Fisher-Yates shuffle)
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
 
+        // Reset trò chơi
+        function resetGame() {
+            const envelopes = document.querySelectorAll('.envelope');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            // Ẩn nút reset
+            resetBtn.style.display = 'none';
+            
+            // Lật lại các phong bao và ẩn các giá trị mờ
+            envelopes.forEach(envelope => {
+                envelope.classList.remove('flipped');
+                const otherValues = envelope.querySelector('.other-values');
+                otherValues.style.display = 'none';
+            });
+            
+            // Trộn lại các phong bao
+            const prizeIndices = [0, 1, 2, 3];
+            shuffleArray(prizeIndices);
+            
+            // Cập nhật lại nội dung
+            envelopes.forEach((envelope, index) => {
+                const prizeIndex = prizeIndices[index];
+                const backface = envelope.querySelector('.envelope-back');
+                const amountElement = backface.querySelector('.amount');
+                const probabilityElement = backface.querySelector('.probability');
+                
+                amountElement.textContent = prizes[prizeIndex].amount;
+                probabilityElement.textContent = prizes[prizeIndex].probability + '%';
+            });
+            
+            // Reset trạng thái game
+            setTimeout(() => {
+                gameComplete = false;
+            }, 600);
+        }
+
+        // Khởi động trò chơi khi trang tải xong
+        window.onload = function() {
+            initGame();
+        };
+    </script>
 </body>
 </html>
